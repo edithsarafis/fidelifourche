@@ -7,3 +7,4 @@ raw_data/
 *.json
 **/__pycache__/
 .env
+.python-version
