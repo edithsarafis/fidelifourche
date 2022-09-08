@@ -9,3 +9,4 @@ raw_data/
 .env
 .python-version
 notebooks/
+*.excel
