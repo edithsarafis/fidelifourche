@@ -18,9 +18,6 @@ def preprocess():
         dtype=DTYPES_RAW
         )
 
-    #details_raw_path = os.path.join(LOCAL_DATA_PATH, "orders.csv")
-    #orders = pd.read_csv(data_raw_path, dtype=DTYPES_RAW_OPTIMIZED)
-
     # Merge the dataframes
     #data = merge_data(orders, details, catalog)
 
