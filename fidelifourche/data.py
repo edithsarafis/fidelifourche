@@ -49,6 +49,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     ### Create a new column : department
 
     df.loc[:,'department'] = df['zip'].str[:2]
+    
 
     print(f"\n Shape after cleaning : {df.shape}")
     print("\n✅ data cleaned")
