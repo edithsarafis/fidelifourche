@@ -12,7 +12,7 @@ def load_data():
         dtype=DTYPES_RAW)
 
 
-    details_raw_path = os.path.join(LOCAL_DATA_PATH, "order_details.csv")
+    details_raw_path = os.path.join(LOCAL_DATA_PATH, "order_details.json")
     chunks = pd.read_json(
        details_raw_path,
        lines=True,
@@ -27,6 +27,8 @@ def load_data():
     sav = sav.groupby(['customer_id']).nunique().reset_index()
 
     print("\n✅ data loaded")
+
+    return orders,details,sav
 
 
 

@@ -1,4 +1,4 @@
-from fidelifourche.data import clean_data,merge_data
+from fidelifourche.data import clean_data,merge_data,load_data
 from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
 
 import pandas as pd
@@ -11,23 +11,18 @@ def preprocess():
 
     print("\n⭐️ use case: preprocess")
 
-    # Retrieve raw data
-    orders_raw_path = os.path.join(LOCAL_DATA_PATH, "orders.csv")
-    orders = pd.read_csv(
-        orders_raw_path,
-        dtype=DTYPES_RAW
-        )
+    # Load data
+    orders,details,sav = load_data()
 
     # Merge the dataframes
-    #data = merge_data(orders, details, catalog)
+    df_merge = merge_data(orders,details,sav)
 
     # Clean data using ml_logic.data.clean_data
-    df = clean_data(orders)
+    df = clean_data(df_merge)
 
     # Create X, y
     #X = df.drop("bool_churn", axis=1)
     #y = df[["bool_churn"]]
-
 
     print("✅ data preprocessed")
 
