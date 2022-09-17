@@ -66,6 +66,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     df['weight']=df['weight']/1000
 
     ### Create a new column : department
+    df['zip']=df['zip'].replace(' ','')
     df['zip']=df['zip'].replace('\r\n94170','94170')
     df['zip'] = df['zip'].str[:5]
     df['department'] = df['zip'].str[:-3]
