@@ -2,6 +2,7 @@ from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
 
 import os
 import pandas as pd
+import datetime as dt
 
 
 def load_data():
@@ -52,6 +53,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     # Filter created_at : starting from 01/01/2020
     df['created_at']= pd.to_datetime(df['created_at'])
     df=df.loc[df['created_at']>='2020',:]
+    df['month']=df['created_at'].dt.month
 
     # Drop duplicates
     df.drop_duplicates(inplace=True)
