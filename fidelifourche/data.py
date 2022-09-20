@@ -7,6 +7,8 @@ import datetime as dt
 
 def load_data():
 
+    print("\n✅ data loading...")
+
     orders_raw_path = os.path.join(LOCAL_DATA_PATH, "orders.csv")
     orders = pd.read_csv(
         orders_raw_path,
