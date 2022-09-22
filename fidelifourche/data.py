@@ -1,9 +1,8 @@
 from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
 
 import os
-import pandas as pd
 import datetime as dt
-
+import pandas as pd
 
 def load_data():
 
@@ -13,7 +12,6 @@ def load_data():
     orders = pd.read_csv(
         orders_raw_path,
         dtype=DTYPES_RAW)
-
 
     details_raw_path = os.path.join(LOCAL_DATA_PATH, "order_details.json")
     chunks = pd.read_json(
@@ -29,10 +27,19 @@ def load_data():
     sav.drop_duplicates(inplace=True)
     sav = sav.groupby(['customer_id']).nunique().reset_index()
 
+    epicerie_bio = os.path.join(LOCAL_DATA_PATH, "nb_epicerie_bio_1372.csv")
+    nb_epicerie_bio = pd.read_csv(
+        epicerie_bio,
+        dtype={"zip": "O"})
+
+    zip_error = os.path.join(LOCAL_DATA_PATH, "zipcode_invalide_875.csv")
+    zip_invalid = pd.read_csv(
+        zip_error,
+        dtype={"zip": "O"})
+
     print("\n✅ data loaded")
 
-    return orders,details,sav
-
+    return orders,details,sav,nb_epicerie_bio,zip_invalid
 
 
 def merge_data(orders: pd.DataFrame,details: pd.DataFrame,sav: pd.DataFrame) -> pd.DataFrame:
@@ -45,8 +52,6 @@ def merge_data(orders: pd.DataFrame,details: pd.DataFrame,sav: pd.DataFrame) -> 
     print("\n✅ data merged")
 
     return df
-
-
 
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
@@ -79,5 +84,19 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
     print(f"\n Shape after cleaning : {df.shape}")
     print("\n✅ data cleaned")
+
+    return df
+
+def merge_zip(df:pd.DataFrame,nb_epicerie_bio:pd.DataFrame,zip_invalid:pd.DataFrame) -> pd.DataFrame:
+
+    df = pd.merge(df,nb_epicerie_bio,on='zip',how='left')
+    df = pd.merge(df,zip_invalid[['zip','lat']],on='zip',how='left')
+
+    df.loc[df['lat'].isna(),'zip_valid']=0
+    df.loc[df['nb_epiceries_bio_1km'].notna(),'zip_valid']=1
+    df.loc[df['zip_valid'].isna(),'zip_valid']=1
+    df.drop(columns={'lat'},inplace=True)
+
+    print("\n✅ ZIP data merged")
 
     return df

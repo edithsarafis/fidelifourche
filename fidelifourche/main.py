@@ -1,20 +1,24 @@
-from fidelifourche.data import clean_data,merge_data,load_data
+from fidelifourche.data import clean_data,merge_data,load_data,merge_zip
 from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
-from sklearn.model_selection import train_test_split
 
-import pandas as pd
 import os
+import pandas as pd
+
+from fidelifourche.preproc import preprocess_features
 
 def preprocess():
 
     # Load data
-    orders,details,sav = load_data()
+    orders,details,sav,nb_epicerie_bio,zip_invalid = load_data()
 
     # Merge the dataframes
     df_merge = merge_data(orders,details,sav)
 
     # Clean data using ml_logic.data.clean_data
-    df = clean_data(df_merge)
+    df_clean = clean_data(df_merge)
+
+    # Merge zip data
+    df = merge_zip(df_clean,nb_epicerie_bio,zip_invalid)
 
     # Create X, y
     X = df.drop("bool_churn", axis=1)
