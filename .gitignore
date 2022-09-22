@@ -10,3 +10,4 @@ raw_data/
 .python-version
 notebooks/
 .env*
+Pipfile
