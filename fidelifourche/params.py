@@ -9,7 +9,7 @@ LOCAL_DATA_PATH = os.path.join(os.getenv('HOME'),"code","edithsarafis", "fidelif
 
 DTYPES_RAW = {
     "customer_id": "O",
-    #"zip": "0",
+    "zip": "O",
     "bool_churn": "int8",
     "aov": "float32",
     "weight": "float32",

@@ -1,44 +1,47 @@
-from fidelifourche.data import clean_data,merge_data
+from fidelifourche.data import clean_data,merge_data,load_data,merge_zip
 from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
 
-import pandas as pd
 import os
+import pandas as pd
 
-def preprocess():
-    """
-    Preprocess the dataset
-    """
+from fidelifourche.preproc import preprocess_features
 
-    print("\n⭐️ use case: preprocess")
+def clean_merge():
 
-    # Retrieve raw data
-    orders_raw_path = os.path.join(LOCAL_DATA_PATH, "orders.csv")
-    orders = pd.read_csv(
-        orders_raw_path,
-        dtype=DTYPES_RAW
-        )
-
-    #details_raw_path = os.path.join(LOCAL_DATA_PATH, "orders.csv")
-    #orders = pd.read_csv(data_raw_path, dtype=DTYPES_RAW_OPTIMIZED)
-
+    # Load data
+    orders,details,sav,nb_epicerie_bio,zip_invalid = load_data()
 
     # Merge the dataframes
-    #data = merge_data(orders, details, catalog)
+    df_merge = merge_data(orders,details,sav)
 
     # Clean data using ml_logic.data.clean_data
-    df = clean_data(orders)
+    df_clean = clean_data(df_merge)
+
+    # Merge zip data
+    df = merge_zip(df_clean,nb_epicerie_bio,zip_invalid)
+
+    print("✅ data cleaned and merged")
+
+    return df
+
+def preprocess(df:pd.DataFrame):
 
     # Create X, y
-    #X = df.drop("bool_churn", axis=1)
-    #y = df[["bool_churn"]]
+    X = df.drop("bool_churn", axis=1)
+    y = df[["bool_churn"]]
 
+    # Preprocess
+    X_preproc = preprocess_features(X)
 
     print("✅ data preprocessed")
+
+    return X_preproc,y
 
 
 if __name__ == '__main__':
     try:
-        preprocess()
+        df = clean_merge()
+        X_preproc,y = preprocess(df)
     except:
         import ipdb, traceback, sys
         extype, value, tb = sys.exc_info()
