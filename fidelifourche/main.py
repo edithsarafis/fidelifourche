@@ -24,9 +24,12 @@ def preprocess():
     X = df.drop("bool_churn", axis=1)
     y = df[["bool_churn"]]
 
+    # Preprocess
+    X_preproc = preprocess_features(X)
+
     print("✅ data preprocessed")
 
-    return df
+    return df,X_preproc,y
 
 
 if __name__ == '__main__':
