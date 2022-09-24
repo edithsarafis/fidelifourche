@@ -17,21 +17,17 @@ def preprocess_features(X: pd.DataFrame) -> np.ndarray:
     # NUM PIPE
     num_transformer = make_pipeline(SimpleImputer(strategy ='constant',fill_value= 0),
                                 RobustScaler())
-    num_col = make_column_selector(dtype_include=['float32','int8'])
+    num_col = make_column_selector(dtype_include=['float32','float64','int8','int16'])
 
     # CAT PIPE
     cat_transformer = OneHotEncoder(handle_unknown='ignore')
-    cat_col = make_column_selector(dtype_include=['object'])
+    cat_col = ['delivery_type','carrier','acquisition_channel','department']
 
     # FINAL PIPE
     preprocessor = make_column_transformer(
         (num_transformer, num_col),
         (cat_transformer, cat_col),
-        remainder='passthrough'
+        remainder='drop'
     )
 
-    X_processed = preprocessor.fit_transform(X)
-
-    print("\n✅ X_processed, with shape", X_processed.shape)
-
-    return X_processed
+    return preprocessor
