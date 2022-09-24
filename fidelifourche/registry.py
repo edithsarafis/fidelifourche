@@ -1,3 +1,5 @@
+from curses import A_LOW
+from typing import Any
 from fidelifourche.params import LOCAL_REGISTRY_PATH
 
 import mlflow
@@ -8,7 +10,7 @@ import os
 import time
 import pickle
 
-from tensorflow.keras import Model, models
+from mlflow.sklearn import Model, load_model, save_model
 
 def save_model(model: Model = None,
                params: dict = None,
@@ -20,9 +22,9 @@ def save_model(model: Model = None,
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
     # retrieve mlflow env params
-    mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
-    mlflow_experiment = os.environ.get("MLFLOW_EXPERIMENT")
-    mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
+    mlflow_tracking_uri = 'https://mlflow.lewagon.ai'#os.environ.get("MLFLOW_TRACKING_URI")
+    mlflow_experiment = 'fidelifourche'#os.environ.get("MLFLOW_EXPERIMENT")
+    mlflow_model_name = None #os.environ.get("MLFLOW_MODEL_NAME")
 
     # configure mlflow
     mlflow.set_tracking_uri(mlflow_tracking_uri)
@@ -39,12 +41,11 @@ def save_model(model: Model = None,
             mlflow.log_metrics(metrics)
 
         # STEP 3: push model to mlflow
-        if model is not None:
+        #if model is not None:
 
-            mlflow.keras.log_model(keras_model=model,
-                                   artifact_path="model",
-                                   keras_module="tensorflow.keras",
-                                   registered_model_name=mlflow_model_name)
+            #mlflow.sklearn.log_model(model,
+                                   #artifact_path="model",
+                                   #registered_model_name=mlflow_model_name)
 
     print("\n✅ data saved to mlflow")
 
@@ -66,10 +67,10 @@ def save_model(model: Model = None,
             pickle.dump(metrics, file)
 
     # save model
-    if model is not None:
-        model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
-        print(f"- model path: {model_path}")
-        model.save(model_path)
+    #if model is not None:
+        #model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
+        #print(f"- model path: {model_path}")
+        #save_model(model, model_path)
 
     print("\n✅ data saved locally")
 
@@ -107,7 +108,7 @@ def load_model(save_copy_locally=False) -> Model:
         Path(LOCAL_REGISTRY_PATH).mkdir(parents=True, exist_ok=True)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
-        model.save(model_path)
+        save_model(model, model_path)
 
     return model
 
@@ -126,7 +127,7 @@ def load_local_model(save_copy_locally=False) -> Model:
     model_path = sorted(results)[-1]
     print(f"- path: {model_path}")
 
-    model = models.load_model(model_path)
+    model = load_model(model_path)
     print("\n✅ model loaded from disk")
 
     return model
