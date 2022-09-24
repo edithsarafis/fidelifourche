@@ -34,8 +34,12 @@ def preprocess(df:pd.DataFrame):
     X = df.drop("bool_churn", axis=1)
     y = df[["bool_churn"]]
 
+
+    # Train/test split
+    X_train,y_train,X_test,y_test =
+
     # Preprocess
-    X_preproc,preprocessor = preprocess_features(X)
+    X_train_preproc,preprocessor = preprocess_features(X_train)
 
     print("✅ data preprocessed")
 
