@@ -1,4 +1,4 @@
-from fidelifourche.data import clean_data,merge_data,load_data,merge_zip
+from fidelifourche.data import clean_data,merge_data,load_data,merge_zip,compress
 from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
 
 import os
@@ -20,7 +20,11 @@ def clean_merge():
     # Merge zip data
     df = merge_zip(df_clean,nb_epicerie_bio,zip_invalid)
 
-    print("✅ data cleaned and merged")
+    # Compressing df
+
+    df = compress(df)
+
+    print("✅ data cleaned, merged and compressed")
 
     return df
 
@@ -41,7 +45,7 @@ def preprocess(df:pd.DataFrame):
 if __name__ == '__main__':
     try:
         df = clean_merge()
-        X_preproc,y = preprocess(df)
+        #X_preproc,y = preprocess(df)
     except:
         import ipdb, traceback, sys
         extype, value, tb = sys.exc_info()
