@@ -32,6 +32,9 @@ def preprocess_features(X: pd.DataFrame) -> np.ndarray:
 
     X_processed = preprocessor.fit_transform(X)
 
+    X_processed = pd.DataFrame(X_processed.toarray(),
+             columns=preprocessor.get_feature_names_out())
+
     print("\n✅ X_processed, with shape", X_processed.shape)
 
-    return X_processed
+    return X_processed,preprocessor

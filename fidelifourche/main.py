@@ -35,17 +35,17 @@ def preprocess(df:pd.DataFrame):
     y = df[["bool_churn"]]
 
     # Preprocess
-    X_preproc = preprocess_features(X)
+    X_preproc,preprocessor = preprocess_features(X)
 
     print("✅ data preprocessed")
 
-    return X_preproc,y
+    return X_preproc,y,preprocessor
 
 
 if __name__ == '__main__':
     try:
         df = clean_merge()
-        #X_preproc,y = preprocess(df)
+        X_preproc,y,preprocessor = preprocess(df)
     except:
         import ipdb, traceback, sys
         extype, value, tb = sys.exc_info()
