@@ -27,15 +27,18 @@ def load_data():
     sav.drop_duplicates(inplace=True)
     sav = sav.groupby(['customer_id']).nunique().reset_index()
 
+
     epicerie_bio = os.path.join(LOCAL_DATA_PATH, "nb_epicerie_bio_1372.csv")
     nb_epicerie_bio = pd.read_csv(
         epicerie_bio,
         dtype={"zip": "O"})
 
+
     zip_error = os.path.join(LOCAL_DATA_PATH, "zipcode_invalide_875.csv")
     zip_invalid = pd.read_csv(
         zip_error,
         dtype={"zip": "O"})
+
 
     print("\n✅ data loaded")
 
@@ -43,7 +46,6 @@ def load_data():
 
 
 def merge_data(orders: pd.DataFrame,details: pd.DataFrame,sav: pd.DataFrame) -> pd.DataFrame:
-
 
     df = orders.drop(columns=['ticket_at', 'raw_subject', 'value'])
     df = pd.merge(df,details,on='order_id',how='left')
