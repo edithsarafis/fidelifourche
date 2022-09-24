@@ -11,3 +11,4 @@ raw_data/
 notebooks/
 .env*
 Pipfile
+mlops/
