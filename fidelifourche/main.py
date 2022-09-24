@@ -36,7 +36,7 @@ def preprocess(df:pd.DataFrame):
 
 
     # Train/test split
-    X_train,y_train,X_test,y_test =
+    #X_train,y_train,X_test,y_test =
 
     # Preprocess
     X_train_preproc,preprocessor = preprocess_features(X_train)
