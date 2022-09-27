@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.pipeline import make_pipeline
 from xgboost import XGBClassifier
 from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import precision_score,recall_score
 
 import pickle
 import os
@@ -39,7 +40,8 @@ def train_model(preproc,
     model = search.best_estimator_
 
     # Score model
-    metrics = model.score(X_val,y_val)
+    metrics = model.precision_score(model.predict(X_val),y_val)
+    metrics.append(model.recall_score(model.predict(X_val),y_val))
 
     print(f"\n✅ model trained ({len(X_train)} rows)")
 

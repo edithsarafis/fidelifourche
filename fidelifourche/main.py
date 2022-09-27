@@ -69,7 +69,6 @@ def preprocess(df:pd.DataFrame, stratify=False):
 
     return X_train_preproc,y_train,X_val_preproc,y_val,preprocessor
 
-
 if __name__ == '__main__':
     try:
         df = clean_merge()
