@@ -53,10 +53,8 @@ def preprocess(df:pd.DataFrame, stratify=False):
     # Preprocess
     preprocessor = preprocess_features(df)
 
-
     X_train_preproc = preprocessor.fit_transform(X_train)
     X_val_preproc = preprocessor.transform(X_val)
-
 
     X_train_preproc = pd.DataFrame(X_train_preproc.toarray(),
              columns=preprocessor.get_feature_names_out())
@@ -69,7 +67,7 @@ def preprocess(df:pd.DataFrame, stratify=False):
 
     print("✅ data preprocessed")
 
-    return preprocessor,X_train_preproc,y_train,X_val_preproc,y_val
+    return preprocessor, X_train_preproc, y_train, X_val_preproc, y_val
 
 def train(preprocessor,X_train_preproc,y_train,X_val_preproc,y_val):
 

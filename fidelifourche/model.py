@@ -13,10 +13,10 @@ from fidelifourche.params import LOCAL_REGISTRY_PATH
 def train_model(preproc,
                 X_train: np.ndarray,
                 y_train: np.ndarray,
-                X_test: np.ndarray,
-                y_test: np.ndarray) :
+                X_val: np.ndarray,
+                y_val: np.ndarray) :
 
-    pipe = make_pipeline(preproc,XGBClassifier())
+    pipe = make_pipeline(XGBClassifier())
 
     # Hyperparameter Grid
     grid = {'xgbclassifier__learning_rate': [0.2, 0.3, 0.4, 0.5],
@@ -38,8 +38,11 @@ def train_model(preproc,
     # Estimator = model
     model = search.best_estimator_
 
+    # Transform
+
+
     # Score model
-    metrics = model.score(X_test,y_test)
+    metrics = model.score(X_val,y_val)
 
     print(f"\n✅ model trained ({len(X_train)} rows)")
 
