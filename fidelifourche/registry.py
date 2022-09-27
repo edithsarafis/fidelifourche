@@ -13,7 +13,7 @@ import pickle
 
 #from mlflow.sklearn import Model, load_model, save_model
 
-def save_model(model: Model = None,
+def save_model_mlflow(model: Model = None,
                params: dict = None,
                metrics: dict = None) -> None:
     """
@@ -52,6 +52,9 @@ def save_model(model: Model = None,
 
     #print("\n✅ data saved to mlflow")
 
+def save_model(model: Model = None,
+               params: dict = None,
+               metrics: dict = None) -> None:
 
     print("\nSave model to local disk...")
 
@@ -82,7 +85,7 @@ def save_model(model: Model = None,
     return None
 
 
-def load_model(save_copy_locally=False) -> Model:
+def load_model_mlflow(save_copy_locally=False) -> Model:
     """
     load the latest saved model, return None if no model found
     """
@@ -118,7 +121,7 @@ def load_model(save_copy_locally=False) -> Model:
     return model
 
 
-def load_local_model(save_copy_locally=False) -> Model:
+def load_model(save_copy_locally=False) -> Model:
 
     print("\nLoad model from local disk...")
 
