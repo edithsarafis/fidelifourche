@@ -60,6 +60,8 @@ def save_model(model: Model = None,
 
     print("\nSave model to local disk...")
 
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+
     # save params
     if params is not None:
         params_path = os.path.join(LOCAL_REGISTRY_PATH, "params", timestamp + ".pickle")
