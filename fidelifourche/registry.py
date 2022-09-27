@@ -52,6 +52,8 @@ def save_model_mlflow(model: Model = None,
 
     #print("\n✅ data saved to mlflow")
 
+    return None
+
 def save_model(model: Model = None,
                params: dict = None,
                metrics: dict = None) -> None:
