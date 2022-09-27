@@ -38,9 +38,6 @@ def train_model(preproc,
     # Estimator = model
     model = search.best_estimator_
 
-    # Transform
-
-
     # Score model
     metrics = model.score(X_val,y_val)
 
