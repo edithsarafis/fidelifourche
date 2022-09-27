@@ -4,13 +4,14 @@ from fidelifourche.params import LOCAL_REGISTRY_PATH
 
 import mlflow
 from mlflow.tracking import MlflowClient
+from mlflow.models import Model
 
 import glob
 import os
 import time
 import pickle
 
-from mlflow.sklearn import Model, load_model, save_model
+#from mlflow.sklearn import Model, load_model, save_model
 
 def save_model(model: Model = None,
                params: dict = None,
@@ -30,15 +31,17 @@ def save_model(model: Model = None,
     mlflow.set_tracking_uri(mlflow_tracking_uri)
     mlflow.set_experiment(experiment_name=mlflow_experiment)
 
-    with mlflow.start_run():
+    #mlflow.sklearn.autolog()
+
+    #with mlflow.start_run():
 
         # STEP 1: push parameters to mlflow
-        if params is not None:
-            mlflow.log_params(params)
+        #if params is not None:
+            #mlflow.log_params(params)
 
         # STEP 2: push metrics to mlflow
-        if metrics is not None:
-            mlflow.log_metrics(metrics)
+        #if metrics is not None:
+            #mlflow.log_metrics(metrics)
 
         # STEP 3: push model to mlflow
         #if model is not None:
@@ -47,7 +50,7 @@ def save_model(model: Model = None,
                                    #artifact_path="model",
                                    #registered_model_name=mlflow_model_name)
 
-    print("\n✅ data saved to mlflow")
+    #print("\n✅ data saved to mlflow")
 
 
     print("\nSave model to local disk...")
@@ -67,10 +70,12 @@ def save_model(model: Model = None,
             pickle.dump(metrics, file)
 
     # save model
-    #if model is not None:
-        #model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
-        #print(f"- model path: {model_path}")
+    if model is not None:
+        model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp + ".pickle")
+        print(f"- model path: {model_path}")
         #save_model(model, model_path)
+        with open(model_path, "wb") as file:
+            pickle.dump(model, file)
 
     print("\n✅ data saved locally")
 
@@ -127,7 +132,10 @@ def load_local_model(save_copy_locally=False) -> Model:
     model_path = sorted(results)[-1]
     print(f"- path: {model_path}")
 
-    model = load_model(model_path)
+    #model = load_model(model_path)
+    with open(model_path, "rb") as file:
+            model = pickle.load(file)
+
     print("\n✅ model loaded from disk")
 
     return model
