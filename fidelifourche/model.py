@@ -24,11 +24,11 @@ def train_model(preproc,
             'xgbclassifier__gamma':[0,1,2]}
 
     # Instanciate Grid Search
-    search = GridSearchCV(pipe, grid,
-                           scoring = 'precision',
+    search = GridSearchCV(pipe,
+                          grid,
+                          scoring = 'precision',
                            cv = 5,
-                           n_jobs=-1
-                          )
+                           n_jobs=-1)
 
     search.fit(X_train,y_train)
 
