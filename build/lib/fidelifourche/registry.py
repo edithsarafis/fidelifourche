@@ -1,78 +1,78 @@
-from curses import A_LOW
-from typing import Any
 from fidelifourche.params import LOCAL_REGISTRY_PATH
 
 import mlflow
 from mlflow.tracking import MlflowClient
-from mlflow.models import Model
 
 import glob
 import os
 import time
 import pickle
 
-#from mlflow.sklearn import Model, load_model, save_model
+from tensorflow.keras import Model, models
 
 
-def save_model_mlflow(model,params,metrics):
-    print("\nSave model to local disk...")
+def save_model(model: Model = None,
+               params: dict = None,
+               metrics: dict = None) -> None:
+    """
+    persist trained model, params and metrics
+    """
 
     timestamp = time.strftime("%Y%m%d-%H%M%S")
 
     # retrieve mlflow env params
-    mlflow_tracking_uri = 'https://mlflow.lewagon.ai'#os.environ.get("MLFLOW_TRACKING_URI")
-    mlflow_experiment = 'fidelifourche'#os.environ.get("MLFLOW_EXPERIMENT")
-    mlflow_model_name = None #os.environ.get("MLFLOW_MODEL_NAME")
+    mlflow_tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
+    mlflow_experiment = os.environ.get("MLFLOW_EXPERIMENT")
+    mlflow_model_name = os.environ.get("MLFLOW_MODEL_NAME")
 
     # configure mlflow
     mlflow.set_tracking_uri(mlflow_tracking_uri)
     mlflow.set_experiment(experiment_name=mlflow_experiment)
 
-    #mlflow.sklearn.autolog()
-
-    #with mlflow.start_run():
+    with mlflow.start_run():
 
         # STEP 1: push parameters to mlflow
-        #if params is not None:
-            #mlflow.log_params(params)
+        if params is not None:
+            mlflow.log_params(params)
 
         # STEP 2: push metrics to mlflow
-        #if metrics is not None:
-            #mlflow.log_metrics(metrics)
+        if metrics is not None:
+            mlflow.log_metrics(metrics)
 
         # STEP 3: push model to mlflow
-        #if model is not None:
+        if model is not None:
 
-            #mlflow.sklearn.log_model(model,
-                                   #artifact_path="model",
-                                   #registered_model_name=mlflow_model_name)
+            mlflow.keras.log_model(keras_model=model,
+                                   artifact_path="model",
+                                   keras_module="tensorflow.keras",
+                                   registered_model_name=mlflow_model_name)
 
-    #print("\n✅ data saved to mlflow")
-    
-    return None
+    print("\n✅ data saved to mlflow")
 
-def save_model(model,params,metrics):
+def save_model_local(params,metrics,model):
+
     print("\nSave model to local disk...")
-    
+
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+
     # save params
     if params is not None:
-        params_path = os.path.join(LOCAL_REGISTRY_PATH,"outputs", "params", timestamp + ".pickle")
+        params_path = os.path.join(LOCAL_REGISTRY_PATH, "params", timestamp + ".pickle")
         print(f"- params path: {params_path}")
         with open(params_path, "wb") as file:
             pickle.dump(params, file)
 
     # save metrics
     if metrics is not None:
-        metrics_path = os.path.join(LOCAL_REGISTRY_PATH,"outputs","metrics", timestamp + ".pickle")
+        metrics_path = os.path.join(LOCAL_REGISTRY_PATH, "metrics", timestamp + ".pickle")
         print(f"- metrics path: {metrics_path}")
         with open(metrics_path, "wb") as file:
             pickle.dump(metrics, file)
 
     # save model
     if model is not None:
-        model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp + ".pickle")
+        model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
         print(f"- model path: {model_path}")
-        #save_model(model, model_path)
         with open(model_path, "wb") as file:
             pickle.dump(model, file)
 
@@ -80,7 +80,8 @@ def save_model(model,params,metrics):
 
     return None
 
-def load_model_mlflow(save_copy_locally=False) -> Model:
+
+def load_model(save_copy_locally=False) -> Model:
     """
     load the latest saved model, return None if no model found
     """
@@ -111,12 +112,12 @@ def load_model_mlflow(save_copy_locally=False) -> Model:
         Path(LOCAL_REGISTRY_PATH).mkdir(parents=True, exist_ok=True)
         timestamp = time.strftime("%Y%m%d-%H%M%S")
         model_path = os.path.join(LOCAL_REGISTRY_PATH, "models", timestamp)
-        save_model(model, model_path)
+        model.save(model_path)
 
     return model
 
 
-def load_local(save_copy_locally=False) -> Model:
+def load_local_model(save_copy_locally=False) -> Model:
 
     print("\nLoad model from local disk...")
 
@@ -130,10 +131,9 @@ def load_local(save_copy_locally=False) -> Model:
     model_path = sorted(results)[-1]
     print(f"- path: {model_path}")
 
-    with open(model_path, "rb") as file:
-            model = pickle.load(file)
-
+    model = pickle.load(model_path)
     print("\n✅ model loaded from disk")
+
 
     return model
 

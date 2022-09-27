@@ -7,9 +7,10 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import make_column_transformer
 from sklearn.model_selection import train_test_split
 
+import numpy as np
 import pandas as pd
 
-def preprocess_features(X: pd.DataFrame):
+def preprocess_features(X: pd.DataFrame) -> np.ndarray:
 
     print("\nPreprocess features...")
 
