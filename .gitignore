@@ -11,8 +11,4 @@ raw_data/
 notebooks/
 .env*
 Pipfile
-<<<<<<< HEAD
-build/
-=======
 mlops/
->>>>>>> d1c6a1e2839b1f06a58c0442b352224a6cc93904

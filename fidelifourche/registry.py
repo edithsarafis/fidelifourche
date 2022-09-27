@@ -48,12 +48,12 @@ def save_model_mlflow(model,params,metrics):
                                    #registered_model_name=mlflow_model_name)
 
     #print("\n✅ data saved to mlflow")
-    
+
     return None
 
 def save_model(model,params,metrics):
     print("\nSave model to local disk...")
-    
+
     # save params
     if params is not None:
         params_path = os.path.join(LOCAL_REGISTRY_PATH,"outputs", "params", timestamp + ".pickle")
@@ -116,7 +116,7 @@ def load_model_mlflow(save_copy_locally=False) -> Model:
     return model
 
 
-def load_local(save_copy_locally=False) -> Model:
+def load_model(save_copy_locally=False) -> Model:
 
     print("\nLoad model from local disk...")
 
