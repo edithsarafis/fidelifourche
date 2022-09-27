@@ -7,6 +7,9 @@ install_requirements:
 check_code:
 	@flake8 scripts/* fidelifourche/*.py
 
+run_api:
+	uvicorn fidelifourche.api.fast:app --reload
+
 black:
 	@black scripts/* fidelifourche/*.py
 
