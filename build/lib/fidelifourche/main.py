@@ -1,5 +1,6 @@
 from fidelifourche.data import clean_data,merge_data,load_data,merge_zip,compress
 from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
+from fidelifourche.registry import load_model, save_model_local
 
 import os
 import pandas as pd
@@ -7,8 +8,6 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from fidelifourche.preproc import preprocess_features
-from fidelifourche.model import train_model
-from fidelifourche.registry import save_model
 
 def clean_merge():
 
@@ -69,12 +68,12 @@ def preprocess(df:pd.DataFrame, stratify=False):
 
     print("✅ data preprocessed")
 
-    return preprocessor,X_train_preproc,y_train,X_val_preproc,y_val
+    return X_train_preproc,y_train,X_val_preproc,y_val,preprocessor
 
-def train(preprocessor,X_train_preproc,y_train,X_val_preproc,y_val):
+def train_model(X_train_preproc,y_train,X_val_preproc,y_val,preprocessor):
 
-    model,params,metrics = train_model(preprocessor,X_train_preproc,y_train,X_val_preproc,y_val)
-    save_model(model,params,metrics)
+    model, params, metrics = train_model(preprocessor,X_train_preproc,y_train,X_val_preproc,y_val)
+    save_model_local(model, params, metrics)
 
     return None
 
@@ -82,8 +81,9 @@ def train(preprocessor,X_train_preproc,y_train,X_val_preproc,y_val):
 if __name__ == '__main__':
     try:
         df = clean_merge()
-        preprocessor,X_train_preproc,y_train,X_val_preproc,y_val = preprocess(df,stratify=False)
-        train(preprocessor,X_train_preproc,y_train,X_val_preproc,y_val)
+        X_train_preproc,y_train,X_val_preproc,y_val,preprocessor = preprocess(df,stratify=False)
+        train_model(X_train_preproc,y_train,X_val_preproc,y_val,preprocessor)
+
     except:
         import ipdb, traceback, sys
         extype, value, tb = sys.exc_info()
