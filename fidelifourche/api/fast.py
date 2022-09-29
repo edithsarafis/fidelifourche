@@ -1,6 +1,5 @@
 from datetime import datetime
 from socket import if_nameindex, if_nametoindex
-import string
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -23,14 +22,14 @@ app.add_middleware(
 
 # http://127.0.0.1:8000/predict?pickup_datetime=2012-10-06 12:10:20&pickup_longitude=40.7614327&pickup_latitude=-73.9798156&dropoff_longitude=40.6513111&dropoff_latitude=-73.8803331&passenger_count=2
 @app.get("/predict")
-def predict(customer_id: string,
-            zip: string,
+def predict(customer_id: str,
+            zip: str,
             aov: float,
             weight: float,
-            delivery_type: string,
-            carrier: string,
-            created_at: string,
-            order_id: string,
+            delivery_type: str,
+            carrier: str,
+            created_at: str,
+            order_id: str,
             share_refunds: float,
             share_discount: float,
             Baby: float,
@@ -42,11 +41,11 @@ def predict(customer_id: string,
             Sant: float,
             Alco: float,
             Beau: float,
-            acquisition_channel: string,
+            acquisition_channel: str,
             delay: float,
-            raw_subject: string,
-            ticket_at: string,
-            value: string):
+            raw_subject: str,
+            ticket_at: str,
+            value: str):
     """
     we use type hinting to indicate the data types expected
     for the parameters of the function
@@ -54,7 +53,7 @@ def predict(customer_id: string,
     to the developpers providing incompatible parameters
     FastAPI also provides variables of the expected data type to use
     without type hinting we need to manually convert
-    the parameters of the functions which are all received as strings
+    the parameters of the functions which are all received as strs
     """
 
     X_new = pd.DataFrame.from_dict(dict(
