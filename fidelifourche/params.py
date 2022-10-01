@@ -6,7 +6,8 @@ load and validate the environment variables in the `.env`
 import os
 
 LOCAL_DATA_PATH = os.path.join(os.getenv('HOME'),"code","edithsarafis", "fidelifourche", "raw_data")
-LOCAL_REGISTRY_PATH = os.path.join(os.getenv('HOME'),"code","edithsarafis", "fidelifourche", "mlops")
+LOCAL_REGISTRY_PATH = os.path.join('..','mlops')
+
 
 DTYPES_RAW = {
     "customer_id": "O",
