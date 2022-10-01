@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fidelifourche.params import LOCAL_DATA_PATH,DTYPES_RAW
 import os
+import json
 
 from fidelifourche.registry import load_model
 
@@ -108,8 +109,9 @@ def predict_batch(start_date: str,
     df_test['created_at'] = pd.to_datetime(df_test['created_at'])
     df_test_X=df_test.loc[df_test['created_at']>=start_date,:].loc[df_test['created_at']<=end_date,:]
     df_test_X.loc[:,'predictions']=app.state.model.predict(df_test_X)
+    df_test_X.drop(columns='Unnamed: 0',inplace=True)
 
-    return df_test_X.to_json()
+    return json.loads('{"items":' + df_test_X.to_json(orient='records', date_format='iso') + '}')
 
 
 @app.get("/")
