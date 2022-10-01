@@ -2,6 +2,8 @@ from datetime import datetime
 from socket import if_nameindex, if_nametoindex
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fidelifourche.params import LOCAL_DATA_PATH,DTYPES_RAW
+import os
 
 from fidelifourche.registry import load_model
 
@@ -20,7 +22,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-# http://127.0.0.1:8000/predict?pickup_datetime=2012-10-06 12:10:20&pickup_longitude=40.7614327&pickup_latitude=-73.9798156&dropoff_longitude=40.6513111&dropoff_latitude=-73.8803331&passenger_count=2
 @app.get("/predict")
 def predict(customer_id: str,
             zip: str,
@@ -93,6 +94,22 @@ def predict(customer_id: str,
     y_pred = app.state.model.predict(X_new)
 
     return {'bool_churn': float(y_pred)}
+
+
+@app.get("/predict_batch")
+def predict_batch(start_date: str,
+            end_date: str):
+
+    test_data = os.path.join(LOCAL_DATA_PATH, "test_data.csv")
+    df_test = pd.read_csv(
+        test_data,
+        dtype={"department": "O"})
+
+    df_test['created_at'] = pd.to_datetime(df_test['created_at'])
+    df_test_X=df_test.loc[df_test['created_at']>=start_date,:].loc[df_test['created_at']<=end_date,:]
+    df_test_X.loc[:,'predictions']=app.state.model.predict(df_test_X)
+
+    return df_test_X.to_json()
 
 
 @app.get("/")

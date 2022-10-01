@@ -31,9 +31,9 @@ def preproc_pipe():
 
     return preprocessor
 
-def pipeline_fit_transform(X_train) -> np.ndarray:
+def pipeline_fit_transform(preprocessor,X_train) -> np.ndarray:
 
-    X_train_preprocessed = preproc_pipe().fit_transform(X_train)
+    X_train_preprocessed = preprocessor.fit_transform(X_train)
 
     return X_train_preprocessed
 

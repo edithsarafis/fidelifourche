@@ -6,7 +6,7 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
-from fidelifourche.preproc import pipeline_preproc,preproc_transform
+from fidelifourche.preproc import preproc_pipe,preproc_transform,pipeline_fit_transform
 
 def clean_merge():
 
@@ -50,7 +50,8 @@ def preprocess(df:pd.DataFrame, stratify=False):
 
     # Preprocess
 
-    preprocessor, X_train_preproc = pipeline_preproc(X_train)
+    preprocessor =  preproc_pipe()
+    X_train_preproc = pipeline_fit_transform(preprocessor,X_train)
     X_val_preproc = preproc_transform(preprocessor,X_val)
 
     X_train_preproc = pd.DataFrame(X_train_preproc.toarray(),
@@ -66,10 +67,23 @@ def preprocess(df:pd.DataFrame, stratify=False):
 
     return X_train_preproc,y_train,X_val_preproc,y_val,preprocessor
 
+def pipe_predict(pipe,start_date,end_date):
+
+    test_data = os.path.join(LOCAL_DATA_PATH, "test_data.csv")
+    df_test = pd.read_csv(
+        test_data,
+        dtype={"department": "O"})
+
+    df_test['created_at'] = pd.to_datetime(df_test['created_at'])
+    df_test_X=df_test.loc[df_test['created_at']>=start_date,:].loc[df_test['created_at']<=end_date,:]
+    df_test_X.loc[:,'predictions']=pipe.predict(df_test_X)
+
+    return df_test_X.to_json()
+
+
 if __name__ == '__main__':
     try:
         df = clean_merge()
-        X_train_preproc,y_train,X_val_preproc,y_val,preprocessor = preprocess(df,stratify=False)
     except:
         import ipdb, traceback, sys
         extype, value, tb = sys.exc_info()
