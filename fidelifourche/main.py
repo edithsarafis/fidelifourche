@@ -6,7 +6,7 @@ import pandas as pd
 
 from sklearn.model_selection import train_test_split
 
-from fidelifourche.preproc import preprocess_features
+from fidelifourche.preproc import pipeline_preproc,preproc_transform
 
 def clean_merge():
 
@@ -49,12 +49,9 @@ def preprocess(df:pd.DataFrame, stratify=False):
         X_train,X_val,y_train,y_val = train_test_split(X, y, test_size=0.3)
 
     # Preprocess
-    preprocessor = preprocess_features(df)
 
-
-    X_train_preproc = preprocessor.fit_transform(X_train)
-    X_val_preproc = preprocessor.transform(X_val)
-
+    preprocessor, X_train_preproc = pipeline_preproc(X_train)
+    X_val_preproc = preproc_transform(preprocessor,X_val)
 
     X_train_preproc = pd.DataFrame(X_train_preproc.toarray(),
              columns=preprocessor.get_feature_names_out())

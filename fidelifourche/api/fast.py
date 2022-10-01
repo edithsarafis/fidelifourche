@@ -3,8 +3,8 @@ from socket import if_nameindex, if_nametoindex
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from fidelifourche.preproc import preprocess_features
 from fidelifourche.registry import load_model
+
 
 import pandas as pd
 
@@ -43,9 +43,12 @@ def predict(customer_id: str,
             Beau: float,
             acquisition_channel: str,
             delay: float,
-            raw_subject: str,
+            quantity: str,
             ticket_at: str,
-            value: str):
+            month: str,
+            department:str,
+            nb_epiceries_bio_1km: float,
+            zip_valid: float):
     """
     we use type hinting to indicate the data types expected
     for the parameters of the function
@@ -79,13 +82,15 @@ def predict(customer_id: str,
             Beau=[Beau],
             acquisition_channel=[acquisition_channel],
             delay=[delay],
-            raw_subject=[raw_subject],
-            ticket_at=[ticket_at],
-            value=[value]
+            quantity= [quantity],
+            ticket_at= [ticket_at],
+            month= [month],
+            department=[department],
+            nb_epiceries_bio_1km= [nb_epiceries_bio_1km],
+            zip_valid=[zip_valid]
             ))
 
-    X_processed = preprocess_features(X_new)
-    y_pred = app.state.model.predict(X_processed)
+    y_pred = app.state.model.predict(X_new)
 
     return {'bool_churn': float(y_pred)}
 

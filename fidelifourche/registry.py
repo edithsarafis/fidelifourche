@@ -125,7 +125,7 @@ def load_model_mlflow(save_copy_locally=False) -> Model:
     return model
 
 
-def load_model(save_copy_locally=False) -> Model:
+def load_model() -> Model:
 
     print("\nLoad model from local disk...")
 

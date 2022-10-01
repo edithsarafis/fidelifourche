@@ -10,10 +10,9 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 import pandas as pd
 
-def preprocess_features(X: pd.DataFrame) -> np.ndarray:
+def preproc_pipe():
 
     print("\nPreprocess features...")
-
     # NUM PIPE
     num_transformer = make_pipeline(SimpleImputer(strategy ='constant',fill_value= 0),
                                 RobustScaler())
@@ -31,3 +30,15 @@ def preprocess_features(X: pd.DataFrame) -> np.ndarray:
     )
 
     return preprocessor
+
+def pipeline_fit_transform(X_train) -> np.ndarray:
+
+    X_train_preprocessed = preproc_pipe().fit_transform(X_train)
+
+    return X_train_preprocessed
+
+def preproc_transform(preprocessor,X_test) :
+
+    X_test_preprocessed = preprocessor.transform(X_test)
+
+    return X_test_preprocessed
