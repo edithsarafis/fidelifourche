@@ -56,3 +56,11 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+
+
+
+deploy_api:
+	@docker build -t eu.gcr.io/$(PROJECT)/$(DOCKER_IMAGE_NAME) .
+	@docker push eu.gcr.io/$(PROJECT)/$(DOCKER_IMAGE_NAME)
+	@gcloud run deploy --image $(MULTI_REGION)/$(PROJECT)/$(DOCKER_IMAGE_NAME) --platform managed --region $(REGION)
