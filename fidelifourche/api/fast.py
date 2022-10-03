@@ -104,7 +104,8 @@ def predict_batch(start_date: str,
     test_data = os.path.join(LOCAL_DATA_PATH, "test_data.csv")
     df_test = pd.read_csv(
         test_data,
-        dtype={"department": "O"})
+        dtype={"department": "O"}
+        )
 
     df_test['created_at'] = pd.to_datetime(df_test['created_at'])
     df_test_X=df_test.loc[df_test['created_at']>=start_date,:].loc[df_test['created_at']<=end_date,:]
