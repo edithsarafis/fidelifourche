@@ -1,5 +1,6 @@
 from fidelifourche.data import clean_data,merge_data,load_data,merge_zip,compress
 from fidelifourche.params import (LOCAL_DATA_PATH,DTYPES_RAW)
+from fidelifourche.registry import load_model
 
 import os
 import pandas as pd
@@ -24,6 +25,8 @@ def clean_merge():
 
     # Compressing df
 
+    df.zip_valid=df.zip_valid.astype('object')
+
     df = compress(df)
 
     print("✅ data cleaned, merged and compressed")
@@ -43,16 +46,19 @@ def preprocess(df:pd.DataFrame, stratify=False):
     y = df[["bool_churn"]]
 
     # Train/val split
-    if stratify == True :
-        X_train,X_val,y_train,y_val = train_test_split(X, y, test_size=0.3, stratify=y)
-    else :
-        X_train,X_val,y_train,y_val = train_test_split(X, y, test_size=0.3)
+    X_train,X_val,y_train,y_val = train_test_split(X, y, test_size=0.3)
 
     # Preprocess
+    model=load_model()
 
-    preprocessor =  preproc_pipe()
-    X_train_preproc = pipeline_fit_transform(preprocessor,X_train)
-    X_val_preproc = preproc_transform(preprocessor,X_val)
+    preprocessor = model.named_steps["columntransformer"]
+
+    X_train_preproc = preprocessor.fit_transform(X_train)
+    X_val_preproc = preprocessor.transform(X_val)
+
+    #preprocessor =  preproc_pipe()
+    #X_train_preproc = pipeline_fit_transform(preprocessor,X_train)
+    #X_val_preproc = preproc_transform(preprocessor,X_val)
 
     X_train_preproc = pd.DataFrame(X_train_preproc.toarray(),
              columns=preprocessor.get_feature_names_out())
@@ -72,7 +78,8 @@ def pipe_predict(pipe,start_date,end_date):
     test_data = os.path.join(LOCAL_DATA_PATH, "test_data.csv")
     df_test = pd.read_csv(
         test_data,
-        dtype={"department": "O"})
+        dtype={"department": "O","zip_valid":"O"})
+
 
     df_test['created_at'] = pd.to_datetime(df_test['created_at'])
     df_test_X=df_test.loc[df_test['created_at']>=start_date,:].loc[df_test['created_at']<=end_date,:]

@@ -7,6 +7,9 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import make_column_transformer
 from sklearn.model_selection import train_test_split
 
+from fidelifourche.params import LOCAL_DATA_PATH
+import os
+
 import numpy as np
 import pandas as pd
 
